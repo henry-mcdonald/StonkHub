@@ -2,7 +2,8 @@ const express = require('express')
 const ejsLayouts = require('express-ejs-layouts')
 const rowdy = require('rowdy-logger')
 const axios = require('axios')
-
+const models = require('./models')
+const cookieParser = require('cookie-parser')
 require('dotenv').config()
 
 
@@ -15,25 +16,34 @@ const rowdyResults = rowdy.begin(app)
 
 
 // Middlewares
-// Sets EJS as the view engine
+const rowdyRes = rowdy.begin(app)
+app.use(require('morgan')('tiny'))
 app.set('view engine', 'ejs')
-// Specifies the location of the static assets folder
-app.use(express.static('public'))
-// Enables EJS Layouts middleware
-app.use(ejsLayouts)
-// Sets up body-parser for parsing form data
+app.use(require('express-ejs-layouts'))
 app.use(express.urlencoded({ extended: false }))
-// Adds some logging to each request
-app.use(require('morgan')('dev'))
+app.use(cookieParser())
+
+console.log("app is starting")
 
 const API_KEY = process.env.API_KEY
+app.use('/user', require('./controllers/userController'))
+app.use('/account', require('./controllers/userController'))
 
-app.use('/users', require('./controllers/usersController'))
+app.use(async(req, res, next) => {
+    // console.log("hello")
+    // console.log(Object.keys(req))
+    // console.log(Object.keys(req.cookies))
+    user = await models.user.findByPk(req.cookies.userId)
+    console.log(user)
 
+    res.user = user
+
+    next()
+})
 
 app.get('/', async (req, res) => {
     try{
-    res.render('users/login')
+    res.render('index')
     console.log("index SHOULD be rednered")
     //console.log(body)
     }
@@ -41,6 +51,8 @@ app.get('/', async (req, res) => {
         console.log(err)
     }
 })
+
+
 
 app.listen(PORT, () => {
     rowdyResults.print()

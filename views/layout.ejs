@@ -5,12 +5,24 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>search your art here</title>
+  <title>Weclome to Stonkhub</title>
 </head>
 <body>
     <a href="/">home</a>
-    <h1>Stonkhub</h1>
+    <br>
   <nav>
+      <% if(user !== null){ %>
+
+        <a href="/user/logout">Log Out</a>
+        <h4>Hello, <%= user.email %>!</h4>
+
+        <% } else{ %>
+            <a href="/user/login">Login</a>
+            
+            <a href="/user/signup">Signup</a>
+            <%}%>
+
+
   </nav>
   <main>
     <%- body %>
