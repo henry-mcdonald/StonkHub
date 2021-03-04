@@ -45,11 +45,11 @@ The paper-trading (fake money) social network. Place trades, track your performa
  **Wireframes**
 
 
-![img](images/login_page.png)
+![img](public/images/login_page.png)
 
-![img](images/personal_dashboard.png)
+![img](public/images/personal_dashboard.png)
 
-![img](images/place_a_trade_screen.png)
+![img](pulic/images/place_a_trade_screen.png)
 
 ROUTES:
 
@@ -66,5 +66,5 @@ ROUTES:
  **ERDs**
 
 
-  ![img](images/erd.png)
+  ![img](public/images/erd.png)
 
