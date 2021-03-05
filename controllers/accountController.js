@@ -32,53 +32,89 @@ router.get('/dashboard', async(req, res) => {
     let user_holdings = await models.holding.findAll({
         where: {user_id: user.id}
     })
-    console.log(user_holdings)
-    //res.send(user_holdings)
-    res.render('account/dashboard', {user_holdings:user_holdings})
+    let user_transactions = await models.transaction.findAll({
+        where: {user_id: user.id}
+    })
+    //res.send(user_transactions)
+    res.render('account/dashboard', {
+        user_holdings:user_holdings,
+        user_transactions:user_transactions
+    })
 
 
 })
 
-router.get('/placetrade', (req, res) => {
-    console.log("dashboard should be rendereds")
-    res.render('account/placetrade')
+router.get('/placetrade', async(req, res) => {
+    console.log("trading window should be rendereds")
+    const decrypted = AES.decrypt(req.cookies.encryptedUserId, SECRET_STRING)
+    const plaintext = decrypted.toString(CryptoJS.enc.Utf8)
+    const user = await models.user.findByPk(plaintext)
+    res.render('account/placetrade',{user:user})
+
 })
 
 router.post('/placetrade', async (req, res) => {
+
+    const decrypted = AES.decrypt(req.cookies.encryptedUserId, SECRET_STRING)
+    const plaintext = decrypted.toString(CryptoJS.enc.Utf8)
+    const user = await models.user.findByPk(plaintext)
+
     console.log("this should place a trade")
     console.log("tx table should be appended and user table + holdings table should be updated")
     const ticker = req.body.ticker
     const qty = req.body.quantity
     const orderType = req.body.ordertype
     let signedqty
-    let transactionIsValid = true //edit this later to do some logic
-    if (orderType === "Buy") {
-        signedqty = qty
-    } else if (orderType === "Sell") {
-        signedqty = -1 * qty
-    }
-
-    let price = "UNKOWN -- API DID NOT RETURN"
-    try {
-        let api_call = `https://cloud.iexapis.com/stable/tops?token=${API_KEY}&symbols=${ticker}`
-        //let api_result = await axios.get(api_call)
-        price = api_result.data[0].lastSalePrice
-    }
-    catch (err) {
-        console.log(err)
-    }
-    const costOfTransaction = price * signedqty
-
-
-    const decrypted = AES.decrypt(req.cookies.encryptedUserId, SECRET_STRING)
-    const plaintext = decrypted.toString(CryptoJS.enc.Utf8)
-    const user = await models.user.findByPk(plaintext)
+    let transactionIsValid = true 
+    let tradeMessage
 
     const holding = await models.holding.findOne({
         where: { user_id: user.id, ticker: ticker }
     })
 
+    //If order is a buy, then check to see if cash is available. 
+    // If order is a sell, check to see if shares are available
+    let price = null
+    try {
+        let api_call = `https://cloud.iexapis.com/stable/tops?token=${API_KEY}&symbols=${ticker}`
+        let api_result = await axios.get(api_call)
+        price = api_result.data[0].lastSalePrice
+    }
+    catch (err) {
+        console.log(err)
+    }
+    if(!price){
+       tradeMessage = "trade has been received but could not be executed due to backend issue"
+
+    }
+
+    if (orderType === "Buy") {
+        signedqty = qty
+        const cashNeeded = price*qty
+        if(cashNeeded > user.cashvalue){
+            transactionIsValid = false
+            tradeMessage = `$${cashNeeded} but only ${user.cashvalue} available`
+        }
+    } else if (orderType === "Sell") {
+        signedqty = -1 * qty
+        if(!holding || qty>holding.holding_size){
+            transactionIsValid = false
+            tradeMessage = "not enough shares to execute this sell order"
+        }
+    }
+
+
+    const costOfTransaction = price * signedqty
+
     if (transactionIsValid) {
+        const appendTx = await models.transaction.create({
+            user_id: user.id,
+            ticker: ticker,
+            buy_or_sell: orderType,
+            tx_price: price,
+            tx_qty: qty
+        })
+
 
         if (!holding) {
 
@@ -90,7 +126,8 @@ router.post('/placetrade', async (req, res) => {
             })
         } else {
             const updatedHolding = await holding.update({
-                holding_size: holding.holding_size + signedqty
+                holding_size: parseFloat(holding.holding_size) + parseFloat(signedqty),
+                latest_price: price
             })
 
         }
@@ -98,15 +135,16 @@ router.post('/placetrade', async (req, res) => {
         const updateUser = await user.update({
             cashvalue: user.cashvalue - costOfTransaction
         })
-    }
+
+    tradeMessage = `Your ${orderType} order was entered for ${qty} shares of ${ticker} at price $${price}`
+
+    } 
 
     console.log(holding)
 
 
-    const tradeMessage = `{req.user.email}, your ${orderType} order was entered for ${qty} shares of ${ticker} at price $${price}`
 
-
-    res.render('account/placetrade', { message: tradeMessage })
+    res.render('account/placetrade', { message: tradeMessage , user:user})
 })
 
 

@@ -1,8 +1,8 @@
 body{
     text-align: center;
-    font-size:1000px;
+    /* font-size:1000px; */
 
-
+    display:block;
 }
 
 .highlight {
@@ -10,14 +10,9 @@ body{
     background-image: linear-gradient(to right, #ffe359 0%, #fff2ac 100%);
 }
 
-.l{
-    display:inline;
-    font-size:1000px;
-}
-
-
   
   table {
+    margin: 0 auto;
     border-collapse: collapse;
     border: 2px solid rgb(200,200,200);
     letter-spacing: 1px;
@@ -48,3 +43,4 @@ body{
   caption {
     padding: 10px;
   }
+

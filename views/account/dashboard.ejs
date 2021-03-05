@@ -1,27 +1,55 @@
-<h1>THIS IS THE DASHBOARD</h1>
+<link rel="stylesheet" href="../css/styles.css">
+
+<div>
+<h3>Current Holdings:</h3>
 
 
 <table>
+  <tr>
+    <th>Ticker</th>
+    <th># Shares</th>
+    <th>Latest Price</th>
+    <th>Last Tx Date</th>
+  </tr>
+
 <% user_holdings.forEach(element => { %>
+
 <tr>
-    <th><%= element.ticker %></th>
-    <th><%= element.holding_size %></th>  
-    <th><%= element.updatedAt %></th>  
+    <td><%= element.ticker %></td>
+    <td><%= element.holding_size %></td>  
+    <td><%= element.latest_price %></td>  
+    <td><%= element.updatedAt %></td>  
 
 </tr>
-  
-            
-
-
-
-
 <% }); %>
-
 </table>
+</div>
+<div>
+<h3>Transactions</h3>
 
+<table>
+  <tr>
+    <th>Ticker</th>
+    <th>Buy or Sell</th>
+    <th>Tx Price</th>
+    <th>Number of Shares</th>
+    <th>Dollar Amt</th>
+    <th>Tx Timestamp</th>
+  </tr>
 
+<% user_transactions.forEach(element => { %>
+<tr>
 
+    <td><%= element.ticker %></td>
+    <td><%= element.buy_or_sell %></td>  
+    <td><%= element.tx_price %></td>  
+    <td><%= element.tx_qty %></td>  
+    <td><%= element.updatedAt %></td>  
 
+</tr>
+<% }); %>
+</table>
+</div>
 <!--  
 
 

@@ -6,7 +6,7 @@ const models = require('../models')
 
 
 
-const initial_acct_value = 100
+const initial_acct_value = 2000
 
 //  router.get('/', (req, res) => {
 //      console.log("the /users should be rendered")
@@ -34,7 +34,17 @@ router.get('/signup', (req, res) => {
     res.render('user/signup',{user:req.user})
 })
 
-router.post('/signup', async(req, res) => {
+router.post('/signup', async(req, res,next) => {
+    const attemptedEmail = req.body.email
+    const checkIfExists = await models.user.findOne({
+        where: {email:attemptedEmail}
+    })
+    if(checkIfExists){
+        res.redirect('signup')
+        return
+    }
+
+
     const newUser = await models.user.create({
         email: req.body.email,
         hashedpassword: req.body.hashedpassword,
