@@ -1,1 +1,39 @@
 <h1>THIS IS THE DASHBOARD</h1>
+
+
+<table>
+<% user_holdings.forEach(element => { %>
+<tr>
+    <th><%= element.ticker %></th>
+    <th><%= element.holding_size %></th>  
+    <th><%= element.updatedAt %></th>  
+
+</tr>
+  
+            
+
+
+
+
+<% }); %>
+
+</table>
+
+
+
+
+<!--  
+
+
+-1. Auth is completed
+0. holding + transaction backend is done
+  *User can enter buy and sell transactions
+  *Available cash balance is updated, shares are added
+
+1. get dashboard formatted properly 
+ * Format nicely
+ 
+
+
+
+-->

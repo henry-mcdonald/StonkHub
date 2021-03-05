@@ -33,6 +33,7 @@ router.get('/dashboard', async(req, res) => {
         where: {user_id: user.id}
     })
     console.log(user_holdings)
+    //res.send(user_holdings)
     res.render('account/dashboard', {user_holdings:user_holdings})
 
 
