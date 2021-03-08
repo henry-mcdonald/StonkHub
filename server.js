@@ -12,7 +12,6 @@ var CryptoJS = require("crypto-js")
 
 // Variables
 const app = express();
-const PORT = 3002;
 const rowdyResults = rowdy.begin(app)
 
 const SECRET_STRING = process.env.SECRET_STRING
@@ -83,6 +82,7 @@ app.get('/', async (req, res) => {
 })
 
 
+const PORT = process.env.PORT || 3002;
 
 app.listen(PORT, () => {
     rowdyResults.print()
