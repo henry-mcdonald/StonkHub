@@ -48,7 +48,7 @@ router.post('/signup', async(req, res,next) => {
     const newUser = await models.user.create({
         email: req.body.email,
         hashedpassword: req.body.hashedpassword,
-        accountvalue: initial_acct_value,
+        //accountvalue: initial_acct_value,
         cashvalue: initial_acct_value
     })
     const userString = newUser.id.toString()
