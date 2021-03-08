@@ -1,7 +1,8 @@
 <link rel="stylesheet" href="../css/styles.css">
 
 <div>
-<h3>Current Holdings:</h3>
+<h3>Cash Balance: $<%=user.cashvalue %></h3>
+  <h3>Current Holdings:</h3>
 
 
 <table>
@@ -9,15 +10,19 @@
     <th>Ticker</th>
     <th># Shares</th>
     <th>Latest Price</th>
-    <th>Last Tx Date</th>
+    <th>Position Value</th>
+    <th>Last Updated At</th>
   </tr>
 
 <% user_holdings.forEach(element => { %>
 
+  <% let holding_amt = parseFloat(element.latest_price) * parseFloat(element.holding_size) %>
 <tr>
     <td><%= element.ticker %></td>
     <td><%= element.holding_size %></td>  
     <td><%= element.latest_price %></td>  
+    <td><%= holding_amt  %> </td>
+
     <td><%= element.updatedAt %></td>  
 
 </tr>
@@ -39,17 +44,20 @@
 
 <% user_transactions.forEach(element => { %>
 <tr>
-
+  <% let amt = parseFloat(element.tx_price) * parseFloat(element.tx_qty) %>
     <td><%= element.ticker %></td>
     <td><%= element.buy_or_sell %></td>  
     <td><%= element.tx_price %></td>  
     <td><%= element.tx_qty %></td>  
+    <td> <%= amt %></td>
     <td><%= element.updatedAt %></td>  
 
 </tr>
 <% }); %>
 </table>
 </div>
+
+
 <!--  
 
 

@@ -37,6 +37,7 @@ router.get('/dashboard', async(req, res) => {
     })
     //res.send(user_transactions)
     res.render('account/dashboard', {
+        user: user,
         user_holdings:user_holdings,
         user_transactions:user_transactions
     })
@@ -84,8 +85,8 @@ router.post('/placetrade', async (req, res) => {
         console.log(err)
     }
     if(!price){
-       tradeMessage = "trade has been received but could not be executed due to backend issue"
-
+       tradeMessage = `trade has been received for ${qty} shares of ${ticker} but could not be executed due to an unsupported ticker or issue with our data vendor. Please contact support with any inquiries.`
+        transactionIsValid = false
     }
 
     if (orderType === "Buy") {
@@ -102,6 +103,15 @@ router.post('/placetrade', async (req, res) => {
             tradeMessage = "not enough shares to execute this sell order"
         }
     }
+    if(isNaN(qty)){
+        transactionIsValid = false
+        tradeMessage = "please enter a numerical share count!"
+    }
+    if(qty<0){
+        transactionIsValid = false
+        tradeMessage = "please enter a positive share count!"
+    }
+
 
 
     const costOfTransaction = price * signedqty

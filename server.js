@@ -31,13 +31,9 @@ app.use(cookieParser())
 
 console.log("app is starting")
 
-app.use('/user', require('./controllers/userController'))
-app.use('/account', require('./controllers/accountController'))
-
 app.use(async(req, res, next) => {
     try{
     const decrypted = AES.decrypt(req.cookies.encryptedUserId,SECRET_STRING)
-
     const plaintext = decrypted.toString(CryptoJS.enc.Utf8)
     console.log(plaintext)
     user = await models.user.findByPk(plaintext)
@@ -57,7 +53,6 @@ app.use(async(req, res, next) => {
         } else{
             //console.log(user)
             console.log("User has been found in the system! Congrats")
-            
         }
     }
     console.log("at base")
@@ -65,11 +60,13 @@ app.use(async(req, res, next) => {
     console.log("at base again")
     //res.user = user
     console.log(res.user)
-    
-
-
     next()
 })
+
+app.use('/user', require('./controllers/userController'))
+app.use('/account', require('./controllers/accountController'))
+
+
 
 app.get('/', async (req, res) => {
     console.log(req.user)

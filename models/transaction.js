@@ -18,7 +18,8 @@ module.exports = (sequelize, DataTypes) => {
     ticker: DataTypes.STRING,
     buy_or_sell: DataTypes.STRING,
     tx_price: DataTypes.FLOAT,
-    tx_qty: DataTypes.FLOAT
+    tx_qty: DataTypes.FLOAT,
+    comment: DataTypes.TEXT
   }, {
     sequelize,
     modelName: 'transaction',

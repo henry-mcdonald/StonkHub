@@ -12,22 +12,29 @@
 
     <a href="/">home</a>
     <br>
-  <nav>
+        <nav>
       <% if(typeof(user) !== "undefined"){ %>
         <% if(user){ %>
-        <a href="/user/logout">Log Out</a>
-        <h4>Hello, <%= user.email %>!. Welcome back to Stonkhub</h4>
-        <a href="../account/dashboard">Personal Dashboard</a>
-        <a href="../account/placetrade">Place a Trade</a>
+        <a id="logoutbar" href="/user/logout">Log Out</a>
+        <br>
+        <br>
+
+        <a class="accountnav" href="/account/dashboard">Personal Dashboard</a>
+        <a class="accountnav" href="/account/placetrade">Place a Trade</a>
         <% } %>
         <% } else{ %>
+
             <a href="/user/login">Login</a>
             <a href="/user/signup">Signup</a>
             <h4>Hello and Welcome to Stonkhub. </h> 
             <%}%>
-  </nav>
+        </nav>
   <main>
-    
+    <% if(typeof(optionalMessage)!== "undefined"){%>
+      <% if(optionalMessage){%>
+  
+  <h3 id="message"><%=optionalMessage%></h3>
+  <% }} %>
     <%- body %>
     <!-- <div class="demo_wrap">
       <img src="/images/moneyprinter.jpg">

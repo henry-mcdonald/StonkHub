@@ -2,7 +2,7 @@ body{
     text-align: center;
     /* font-size:1000px; */
 
-    display:block;
+   
 }
 
 .highlight {
@@ -44,3 +44,22 @@ body{
     padding: 10px;
   }
 
+#dangerzonebutton{
+  
+  font-size:10px;
+}
+
+#message{
+  color:red;
+}
+
+#profile{
+  height:200px;
+  width:200px;
+}
+/* .allnavs{
+  position: absolute;
+  margin-left:0;
+  margin-top:0;
+}
+ */

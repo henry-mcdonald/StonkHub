@@ -65,15 +65,21 @@ router.post('/login', async(req, res) => {
             where: { email: req.body.email }
         })
         // check if that user's password matches the incoming password
+    if(user){
     if (user.hashedpassword === req.body.hashedpassword) {
         // if yes, set cookie userId = user.id
         const userString = user.id.toString()
         const encryptedUserId = AES.encrypt(userString,SECRET_STRING).toString()
         res.cookie('encryptedUserId', encryptedUserId)
-        res.render('index',{user:user})
+        res.render('index',{user:user,optionalMessage:"Welcome Back, " + req.body.email + "!"})
             // if no, re-render the login form
+        
     } else {
-        res.render('user/login')
+        res.render('user/login',{optionalMessage:"incorrect password"})
+    }
+    } else{
+
+        res.render('user/login',{optionalMessage:"invalid user"})
     }
 })
 
@@ -85,5 +91,43 @@ router.get('/logout', (req, res) => {
     res.render('index',{user:undefined})
 })
 
+router.get('/dangerzone', (req,res) => {
+    console.log("danger zone is hit")
+    res.render('user/dangerzone')
+})
+
+router.get('/deleteaccount', async(req,res)=>{
+    const decrypted = AES.decrypt(req.cookies.encryptedUserId, SECRET_STRING)
+    const plaintext = decrypted.toString(CryptoJS.enc.Utf8)
+    const user = await models.user.findByPk(plaintext)
+    const userToDestroy = await models.user.findOne({
+        where: {id: user.id}
+    })
+    const deletedUser = await userToDestroy.destroy(); 
+    res.clearCookie('encryptedUserId')
+
+    res.render('index',{optionalMessage:"Your account has been deleted"})
+})
+
+router.get('/editprofile', async(req,res)=>{
+    const decrypted = AES.decrypt(req.cookies.encryptedUserId, SECRET_STRING)
+    const plaintext = decrypted.toString(CryptoJS.enc.Utf8)
+    const user = await models.user.findByPk(plaintext)
+    console.log('edit profile screen should be rendered')
+    res.render('user/editprofile',{user})
+})
+
+router.post('/editprofile', async(req,res)=>{
+    const decrypted = AES.decrypt(req.cookies.encryptedUserId, SECRET_STRING)
+    const plaintext = decrypted.toString(CryptoJS.enc.Utf8)
+    const user = await models.user.findByPk(plaintext)
+
+    const newProfile = req.body.profile
+    
+    const updateUser = await user.update({
+        profile:newProfile
+    })
+    res.render('user/editprofile',{user:user,optionalMessage:"Profile Updated"})
+})
 
 module.exports = router
