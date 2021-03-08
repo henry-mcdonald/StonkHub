@@ -157,6 +157,19 @@ router.post('/placetrade', async (req, res) => {
     res.render('account/placetrade', { message: tradeMessage , user:user})
 })
 
+router.post('/addcomment',async(req,res)=>{
+    const decrypted = AES.decrypt(req.cookies.encryptedUserId, SECRET_STRING)
+    const plaintext = decrypted.toString(CryptoJS.enc.Utf8)
+    const user = await models.user.findByPk(plaintext)
+    res.render('account/placetrade',{user:user,message:"comment added!"})
+
+    const appendTx = await models.transaction.create({
+        user_id: user.id,
+        comment:req.body.comment
+    })
+        
+})
+
 
 module.exports = router
 

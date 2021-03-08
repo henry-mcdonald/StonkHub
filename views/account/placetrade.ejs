@@ -19,6 +19,18 @@
    <label for="Sell">Sell</label>
 
 </form>
+<br>
+<br>
+
+<br>
+<br>
+
+<form action="/account/addcomment" method="POST">
+    <label for="comment">Add Comment</label>
+    <textarea id="comment" name="comment"></textarea>
+
+ <input type="submit" value="Add">
+</form>
 
 <h4><% if(typeof(message) !== "undefined"){ %>
 <%= message %>

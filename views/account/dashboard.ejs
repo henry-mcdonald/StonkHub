@@ -43,7 +43,9 @@
   </tr>
 
 <% user_transactions.forEach(element => { %>
+  <%if(!element.comment){%>
 <tr>
+    
   <% let amt = parseFloat(element.tx_price) * parseFloat(element.tx_qty) %>
     <td><%= element.ticker %></td>
     <td><%= element.buy_or_sell %></td>  
@@ -53,7 +55,10 @@
     <td><%= element.updatedAt %></td>  
 
 </tr>
-<% }); %>
+<%}else{%>
+  <td colspan=5><%=element.comment%></td>
+  <td ><%=element.updatedAt%></td>
+<% }}); %>
 </table>
 </div>
 
