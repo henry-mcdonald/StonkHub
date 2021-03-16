@@ -19,8 +19,7 @@ const API_KEY = process.env.API_KEY
 
 app.use(express.static(__dirname + "/public"))
 
-app.use('/user', require('./controllers/userController'))
-app.use('/account', require('./controllers/accountController'))
+
 
 // Middlewares
 const rowdyRes = rowdy.begin(app)
@@ -66,7 +65,8 @@ app.use(async(req, res, next) => {
 
 
 
-
+app.use('/user', require('./controllers/userController'))
+app.use('/account', require('./controllers/accountController'))
 
 app.get('/', async (req, res) => {
     console.log(req.user)

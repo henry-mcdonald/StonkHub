@@ -20,9 +20,6 @@ module.exports = {
       tx_price: {
         type: Sequelize.FLOAT
       },
-      tx_qty: {
-        type: Sequelize.FLOAT
-      },
       comment: {
         type: Sequelize.TEXT
       },
